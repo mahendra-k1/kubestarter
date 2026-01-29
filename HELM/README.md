@@ -33,7 +33,7 @@ Package the chart:
 
 helm package .
 ```
-Install the Helm chart:
+Install the Helm chart (create namespace and all objects/services at same time):
 ```bash
 
 helm install apache ./apache --namespace apache-namespace --create-namespace
@@ -81,6 +81,13 @@ Open your browser and visit:
 
 http://localhost:8080
 ```
+List Helm releases across ALL namespaces:
+
+```bash
+
+helm list -A
+```
+
 Uninstallation
 To remove the deployment and associated resources:
 
