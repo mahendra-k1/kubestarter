@@ -115,6 +115,13 @@ roleRef:
 kubectl apply -f apache-role.yaml
 kubectl apply -f apache-rolebinding.yaml
 ```
+- Test Apache User Permissions:
+```bash
+kubectl auth whoami
+kubectl auth can-i create deployment -n apache-namespace --as=apache-user
+kubectl auth can-i get pods -n apache-namespace --as=apache-user
+kubectl auth can-i delete service -n apache-namespace --as=apache-user
+```
 #
 - Create Users (Optional):
 
@@ -124,13 +131,37 @@ kubectl apply -f apache-rolebinding.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: apache-user
+  name: apache-sa
   namespace: apache-namespace
 ```
 #
+
+- Update Rolebinding file and add Service Account User
+```yaml
+# apache-rolebinding-sa.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: apache-manager-binding
+  namespace: apache-namespace
+subjects:
+- kind: User
+  name: apache-user
+  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount
+  name: apache-sa
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: apache-manager
+  apiGroup: rbac.authorization.k8s.io
+```
+#
+
 - Apply the service accounts:
 ```bash
 kubectl apply -f apache-serviceaccount.yaml
+kubectl apply -f apache-rolebinding-sa.yaml
 ```
 #
 
@@ -140,13 +171,13 @@ kubectl apply -f apache-serviceaccount.yaml
 
 - Check Roles:
 ```bash
-kubectl get roles -n apache-namespace
+kubectl get roles -n apache-namespace -o wide
 ```
 Ensure apache-manager and nginx-manager roles are listed.
 #
 - Check RoleBindings:
 ```bash
-kubectl get rolebindings -n apache-namespace
+kubectl get rolebindings -n apache-namespace -o wide
 ```
 Ensure apache-manager-binding and nginx-manager-binding role bindings are listed.
 #
@@ -155,21 +186,21 @@ Ensure apache-manager-binding and nginx-manager-binding role bindings are listed
 ```bash
 kubectl get serviceaccounts -n apache-namespace
 ```
-Ensure apache-user and nginx-user service accounts are listed.
+Ensure apache-sa service account is listed.
 
 ### Test Access Using Impersonation
 You can use the 'kubectl auth can-i' command to verify the permissions granted by the roles.
 
-**Test Apache User Permissions:**
+- Test Apache User Permissions:
 ```bash
-kubectl auth can-i create deployment -n apache-namespace --as=apache-user
-kubectl auth can-i get pods -n apache-namespace --as=apache-user
-kubectl auth can-i delete service -n apache-namespace --as=apache-user
+kubectl auth can-i create deployment -n apache-namespace --as=system:serviceaccount:apache-ns-rbac:apache-sa
+kubectl auth can-i get pods -n apache-namespace --as=system:serviceaccount:apache-ns-rbac:apache-sa
+kubectl auth can-i delete service -n apache-namespace --as=system:serviceaccount:apache-ns-rbac:apache-sa
 ```
 #
 **To test denial of permissions outside the namespace:**
 ```bash
-kubectl auth can-i create deployment -n nginx-namespace --as=apache-user
+kubectl auth can-i create deployment -n nginx-namespace --as=system:serviceaccount:apache-ns-rbac:apache-sa
 ```
 #
 ### Create Test Resources
