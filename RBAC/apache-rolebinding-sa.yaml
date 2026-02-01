@@ -1,0 +1,17 @@
+# apache-rolebinding-sa.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: apache-manager-binding
+  namespace: apache-namespace
+subjects:
+- kind: User
+  name: apache-user
+  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount
+  name: apache-sa
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: apache-manager
+  apiGroup: rbac.authorization.k8s.io
