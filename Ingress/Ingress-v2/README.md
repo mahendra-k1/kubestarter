@@ -13,7 +13,7 @@
 #
 ## Steps to implement ingress:
 
-<b>1) Create kind cluster as mentioned on [here](https://github.com/mahendra-k1/kubestarter/tree/main/kind-cluster) </b>
+<b>1) Create kind cluster as mentioned [here](https://github.com/mahendra-k1/kubestarter/tree/main/kind-cluster) </b>
 
 #
 <b>2) Check Kind cluster status and nodes :</b>
@@ -169,8 +169,8 @@ kubectl get all ingress-nginx
 kubectl patch svc ingress-nginx-controller -n ingress-nginx -p '{"spec": {"type": "NodePort"}}'
 ```
 - port forward to access the Apache service on browser.
-  ```bash
-  kubectl port-forward service/ingress-nginx-controller 32405:80 -n ingress-nginx --address 0.0.0.0
-  ```
+```bash
+kubectl port-forward service/ingress-nginx-controller 32405:80 -n ingress-nginx --address 0.0.0.0 &
+```
 #
 
