@@ -3,7 +3,7 @@
 ### In this demo, we will see how to use ingress controller to route the traffic on different services.
 
 ### Pre-requisites to implement this project:
--  Create 1 virtual machine on AWS with 2 CPU, 4GB of RAM (t2.medium)
+- Create 1 virtual machine on AWS with 2 CPU, 4GB of RAM (t2.medium)
 - Setup Kind cluster on it.
 #
 
@@ -13,7 +13,7 @@
 #
 ## Steps to implement ingress:
 
-<b>1) Create kind cluster:</b>
+<b>1) Create kind cluster as mentioned on [here](https://github.com/mahendra-k1/kubestarter/tree/main/kind-cluster) </b>
 
 #
 <b>2) Check Kind cluster status and nodes :</b>
